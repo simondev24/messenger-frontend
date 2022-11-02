@@ -2,6 +2,7 @@ import React from 'react'
 import { useState, useEffect } from "react";
 import axios from 'axios';
 import './User.css';
+import { useNavigate } from "react-router-dom"
 
 const apiAddress = 'http://localhost:4000';
 
@@ -9,6 +10,7 @@ export default function User() {
     const [name, setName] = useState("");
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState("");
+    const navigate = useNavigate()
 
     let handleSubmit = async (e: any) => {
       e.preventDefault();
@@ -36,10 +38,11 @@ export default function User() {
           if (resJson['auth-token']) {
             sessionStorage.setItem("Auth-token", resJson['auth-token']);
             setMessage("Logged in");
+            
           } else {
             setMessage(resJson['message']);
           }
-          // redirect
+          navigate('/dashboard');
         }
       } catch (err) {
         console.log(err);

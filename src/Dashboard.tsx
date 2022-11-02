@@ -1,48 +1,31 @@
-import React from 'react'
 import { useState, useEffect } from "react";
-import axios from 'axios';
 import './Dashboard.css';
 
 const apiAddress = 'http://localhost:4000';
 
 export default function Dashboard() {
-    const [id, setId] = useState("");
-    const [name, setName] = useState("");
-    const [password, setPassword] = useState("");
     const [conversations, setConversations] = useState([]);
-
+    
     useEffect(() => {
-      fetchUsers();
+      console.log("use effect called");
+      const fetchConversations = async () => {
+        const conversations = getConversations();
+      };
+      fetchConversations();
     }, []);
 
-    const fetchUsers = () => {
-      axios
-        .get(apiAddress + '/conversation/all')
-        .then((res) => {
-          console.log(res);
-          setConversations(res.data);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    };
-
-    let handleSubmit = async (e: any) => {
-      e.preventDefault();
+    const getConversations = async () => {
       try {
-        let res = await fetch(apiAddress + "/user", {
-          method: "POST",
+        let res = await fetch(apiAddress + "/conversation/all", {
+          method: "GET",
           headers: {
             Accept: 'application/json',
                     'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*'
+                    'Access-Control-Allow-Origin': '*',
+                    'Auth-token': `${sessionStorage.getItem("Auth-token")}`
         },
-          body: JSON.stringify({
-            
-          }),
         });
-        let resJson = await res.json();
-        
+        setConversations(await res.json());
       } catch (err) {
         console.log(err);
       }
